@@ -1,11 +1,9 @@
 // اجرا در صفحات ادمین
 jQuery(function ($) {
-  // اگر متاباکس ما وجود ندارد، کاری نکن
-  if (!$('#avp_video_url').length) return;
+  if (!$('#avp_video_id').length) return;
 
   var frame;
 
-  // کلیک روی دکمه انتخاب
   $(document).on('click', '#avp_upload_video_btn', function (e) {
     e.preventDefault();
 
@@ -20,21 +18,17 @@ jQuery(function ($) {
 
     frame.on('select', function () {
       var att = frame.state().get('selection').first().toJSON();
-      $('#avp_video_url').val(att.url);
+      $('#avp_video_id').val(att.id);
+      $('#avp_video_preview').html('<video src="' + att.url + '" controls style="max-width:100%;height:auto;"></video>');
       $('#avp_remove_video_btn').show();
-      // برای اطمینان، یک تریگر تغییر هم بزن
-      $('#avp_video_url').trigger('change');
-      console.log('AVP: video selected ->', att.url);
     });
 
     frame.open();
   });
 
-  // حذف
   $(document).on('click', '#avp_remove_video_btn', function () {
-    $('#avp_video_url').val('');
+    $('#avp_video_id').val('');
+    $('#avp_video_preview').html('');
     $(this).hide();
   });
-
-  console.log('AVP admin-video.js ready');
 });
