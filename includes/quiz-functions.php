@@ -55,7 +55,8 @@ add_shortcode('avp_video_quiz', function () {
     if (!is_singular('avp_video')) return '';
 
     global $post;
-    $video = get_post_meta($post->ID, '_avp_video_url', true);
+    $video_id = (int) get_post_meta($post->ID, '_avp_video_id', true);
+    $video = $video_id ? wp_get_attachment_url($video_id) : '';
     $q     = get_post_meta($post->ID, '_avp_quiz_question', true);
     $opts  = [];
     for ($i=1; $i<=4; $i++) $opts[$i] = get_post_meta($post->ID, "_avp_option_$i", true);

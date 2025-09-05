@@ -30,48 +30,6 @@ function avp_video_meta_callback($post) {
     <p><label>گزینه صحیح (1 تا 4):</label><br><input type="number" min="1" max="4" name="avp_correct_option" value="<?php echo esc_attr($correct); ?>"></p>
     <?php
 }
-
-function avp_video_url_callback($post) {
-    wp_nonce_field('avp_video_url_nonce_action', 'avp_video_url_nonce');
-    $url      = get_post_meta($post->ID, '_avp_video_url', true);
-    $video_id = get_post_meta($post->ID, '_avp_video_id', true);
-    if (!$url && $video_id) {
-        $url = wp_get_attachment_url($video_id);
-    }
-    ?>
-    <input type="hidden" id="avp_video_id" name="avp_video_id" value="<?php echo esc_attr($video_id); ?>">
-    <input type="text" id="avp_video_url" name="avp_video_url" value="<?php echo esc_url($url); ?>" style="width:100%;" readonly>
-    <p>
-        <button type="button" class="button" id="avp_upload_video_btn">آپلود یا انتخاب ویدیو</button>
-        <button type="button" class="button" id="avp_remove_video_btn" style="display:<?php echo $url ? 'inline-block':'none';?>">حذف</button>
-    </p>
-    <script>
-    jQuery(function($){
-        var mediaUploader;
-        $('#avp_upload_video_btn').on('click', function(e){
-            e.preventDefault();
-            if (mediaUploader) { mediaUploader.open(); return; }
-            mediaUploader = wp.media({
-                title: 'انتخاب یا آپلود ویدیو',
-                button: { text: 'استفاده از این ویدیو' },
-                library: { type: 'video' },
-                multiple: false
-            });
-            mediaUploader.on('select', function(){
-                var a = mediaUploader.state().get('selection').first().toJSON();
-                $('#avp_video_url').val(a.url);
-                $('#avp_video_id').val(a.id);
-                $('#avp_remove_video_btn').show();
-            });
-            mediaUploader.open();
-        });
-        $('#avp_remove_video_btn').on('click', function(){
-            $('#avp_video_url').val('');
-            $('#avp_video_id').val('');
-            $(this).hide();
-        });
-    });
-    </script>
     <?php
 }
 
@@ -88,7 +46,5 @@ add_action('save_post', function ($post_id) {
     }
 
     if (isset($_POST['avp_video_url_nonce']) && wp_verify_nonce($_POST['avp_video_url_nonce'], 'avp_video_url_nonce_action')) {
-        if (isset($_POST['avp_video_url'])) update_post_meta($post_id, '_avp_video_url', esc_url_raw($_POST['avp_video_url']));
-        update_post_meta($post_id, '_avp_video_id', intval($_POST['avp_video_id'] ?? 0));
     }
 });
