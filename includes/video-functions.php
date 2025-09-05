@@ -30,20 +30,6 @@ function avp_video_meta_callback($post) {
     <p><label>گزینه صحیح (1 تا 4):</label><br><input type="number" min="1" max="4" name="avp_correct_option" value="<?php echo esc_attr($correct); ?>"></p>
     <?php
 }
-
-function avp_video_url_callback($post) {
-    wp_nonce_field('avp_video_url_nonce_action', 'avp_video_url_nonce');
-    $video_id = (int) get_post_meta($post->ID, '_avp_video_id', true);
-    $url = $video_id ? wp_get_attachment_url($video_id) : '';
-    ?>
-    <input type="hidden" id="avp_video_id" name="avp_video_id" value="<?php echo esc_attr($video_id); ?>">
-    <div id="avp_video_preview" style="margin-bottom:10px;">
-        <?php if ($url) echo wp_video_shortcode(['src' => esc_url($url)]); ?>
-    </div>
-    <p>
-        <button type="button" class="button" id="avp_upload_video_btn">آپلود یا انتخاب ویدیو</button>
-        <button type="button" class="button" id="avp_remove_video_btn" style="display:<?php echo $url ? 'inline-block' : 'none'; ?>;">حذف</button>
-    </p>
     <?php
 }
 
@@ -60,12 +46,5 @@ add_action('save_post', function ($post_id) {
     }
 
     if (isset($_POST['avp_video_url_nonce']) && wp_verify_nonce($_POST['avp_video_url_nonce'], 'avp_video_url_nonce_action')) {
-        $vid = intval($_POST['avp_video_id'] ?? 0);
-        if ($vid) {
-            update_post_meta($post_id, '_avp_video_id', $vid);
-        } else {
-            delete_post_meta($post_id, '_avp_video_id');
-        }
-        delete_post_meta($post_id, '_avp_video_url');
     }
 });
